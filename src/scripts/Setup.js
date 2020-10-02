@@ -3,7 +3,7 @@ import { Potato, Pig, Carrot, Cash } from "./Resource";
 
 export default function Setup() {
   // Create Player and Bots.
-  let player = new Trader("Darien");
+  let player = new Trader("Username");
   // Starting Values
   player.AddItemToInventory(new Carrot(Math.floor(Math.random() * 500)));
   player.AddItemToInventory(new Cash());
@@ -13,11 +13,12 @@ export default function Setup() {
   let listings = [];
   
   // Initial setup of bots.
-  for(let i = 0; i < 10; i++) {
-    let bot = new Bot();
+  for(let i = 0; i < 100; i++) {
+    let bot = new Bot("September");
     let quantity = Math.floor(Math.random() * 500);
     bot.AddItemToInventory(new RESOURCES[Math.floor(Math.random() * 3)](quantity));
     bots.push(bot);
+
   }
   
   

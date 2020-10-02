@@ -4,20 +4,22 @@
       <p v-on:click="ToggleTab(true)"  v-bind:class="{ 'active-tab': showListings }">Listings</p>
       <p v-if="activeTrade" v-on:click="ToggleTab(false)" v-bind:class="{ 'active-tab': !showListings }">Active Trade</p>
     </div>
+    <button v-if="showListings" v-on:click="CreateListing">Create Listing</button>
 
-    <div v-if="showListings">
+    <div id="trade-tab" v-if="showListings">
       <div class="trade-container" v-bind:key="trade.tradeID" v-for="trade in listings">
-        <h3>Trade ID: {{trade.trade}}</h3>
         <h3>{{trade.tradeType}}:</h3>
 
         <div v-bind:key="resource" v-for="resource in trade.tradeItems"> 
           <p>{{resource.quantity}} {{resource.resourceName}}(s)</p>
         </div>
 
+        <p>${{ trade.askingPrice }}</p>
+
         <button v-on:click="SetActiveTrade(true, trade)">Make Offer</button>
       </div>
-      <button v-on:click="CreateListing">Create Listing</button>
     </div>
+
       
     <div id="active-trade" v-else>
       <div class="inventory" id="player-trading-section">
@@ -39,7 +41,7 @@
 
       <div id="trade-buttons">
         <button v-on:click="MakeOffer()">Make Offer</button>
-        <button v-on:click="CancelTrade">Cancel</button>
+        <button v-on:click="CancelTrade(true)">Cancel</button>
       </div>
     </div>
   </div>
@@ -64,6 +66,9 @@ export default {
 
   methods: {
     SetActiveTrade: function(bool, trade) {
+      // Prevent player from trading with themselves.
+      if(trade.createdBy === this.player.id) return;
+
       this.activeTrade = bool;
       this.player.currentTrade = this.currentTrade = trade;
     },
@@ -75,12 +80,11 @@ export default {
 
     CreateListing: function (e) {
       let newListing = this.player.CreateListing();
-      console.log("In trading", newListing)
-      if(newListing === false) {
-        this.modal.updateModalText(error);
+    
+      if(typeof newListing !== 'object') {
+        this.modal.updateModalText(newListing);
         this.modal.toggleModal();
       } else {
-        console.log(newListing);
         this.listings.push(newListing);
       }
     },
@@ -156,6 +160,7 @@ export default {
               // player does not already have resource.
               player.inventory.push(item)
             });
+
             this.CancelTrade();
             this.modal.updateModalText("Failed to come to a trade agreement.", "error");
             this.modal.toggleModal();
@@ -164,7 +169,27 @@ export default {
       }
     },
 
-    CancelTrade: function () {
+    CancelTrade: function (clicked) {
+      // if clicked = true, Cancel Trade is coming directly from players canceling. Not from failing to coming to a trade agreement.
+      if(clicked) {
+        console.log("TESTING", this.player)
+        let player = this.player;
+        let currentTrade = this.currentTrade;
+        // give items back to the player
+        this.currentTrade.ItemsBeingOffered.forEach(function(item, i) {
+          for(let j = 0; j < player.inventory.length; j++) {
+            if(player.inventory[j] === undefined) break;
+            if(player.inventory[j].resourceType === item.resourceType) {
+              player.inventory[j].quantity += item.quantity;
+              currentTrade.ItemsBeingOffered.shift(); // TO DO: MAKE SURE THIS IS REMOVING THE CORRECT ITEM.
+              return;
+            }
+          }
+          // player does not already have resource.
+          player.inventory.push(item)
+        });
+      }
+
       this.player.currentTrade = null;
       this.currentTrade = Trade;
       this.activeTrade = false;
@@ -196,76 +221,5 @@ function RemoveTradeGlobally(currentTrade, listings) {
 </script>
 
 <style scoped>
-#trading {
-  width: 50%;
-}
-
-#tabs {
-  display: flex;
-  border-bottom: 5px solid black;
-}
-
-#tabs p {
-  width: 50%;
-  text-align: center;
-  margin: 0;
-  font-size: 2rem;
-}
-
-.active-tab {
-  background-color: rgb(0, 255, 136);
-}
-
-/* Listings Tab */
-.trade-container {
-  background-color: rgb(34, 30, 30);
-  margin: 1rem;
-  color: white;
-  padding: 1rem;
-}
-
-/* Active Trade Tab */
-#active-trade {
-  background-color: rgb(253, 253, 253);
-  height: 100%;
-  padding: 1rem;
-  color: white;
-  font-size: 1.5rem;
-}
-
-#active-trade .inventory {
-  background-color: rgb(26, 24, 24);
-  padding: 1rem;
-  height: 40%;
-  margin: 1rem;
-}
-
-#bot-trading-section .trading-slot, #player-trading-section .trading-slot {
-  color: black;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.87);
-  width: 30%;
-  height: 20%;
-  margin: 0.5rem;
-}
-
-#trade-buttons {
-  display: flex;
-  width: 95%;
-  margin: 0 auto;
-}
-
-#trade-buttons button {
-  background-color: white;
-  width: 50%;
-  font-size: 2rem;
-  height: 4rem;
-  background-color: rgb(16, 195, 16);
-}
-
-#trade-buttons button:last-child {
-  background-color: rgb(231, 0, 0);
-}
+ @import '../styles/Trading.css';
 </style>

@@ -1,0 +1,82 @@
+#trading {
+  width: 50%;
+}
+
+#tabs {
+  display: flex;
+  border-bottom: 5px solid black;
+}
+
+#tabs p {
+  width: 50%;
+  text-align: center;
+  margin: 0;
+  font-size: 2rem;
+}
+
+.active-tab {
+  background-color: rgb(0, 255, 136);
+}
+
+/* Listings Tab */
+#trade-tab {
+  display: flex;
+  height: 100%;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+  justify-content: space-evenly;
+}
+
+.trade-container {
+  background-color: rgb(34, 30, 30);
+  margin: 1rem;
+  color: white;
+  padding: 1rem;
+  width: 10%;
+  height: 20%;
+}
+
+/* Active Trade Tab */
+#active-trade {
+  background-color: rgb(253, 253, 253);
+  height: 100%;
+  padding: 1rem;
+  color: white;
+  font-size: 1.5rem;
+}
+
+#active-trade .inventory {
+  background-color: rgb(26, 24, 24);
+  padding: 1rem;
+  height: 40%;
+  margin: 1rem;
+}
+
+#bot-trading-section .trading-slot, #player-trading-section .trading-slot {
+  color: black;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.87);
+  width: 30%;
+  height: 20%;
+  margin: 0.5rem;
+}
+
+#trade-buttons {
+  display: flex;
+  width: 95%;
+  margin: 0 auto;
+}
+
+#trade-buttons button {
+  background-color: white;
+  width: 50%;
+  font-size: 2rem;
+  height: 4rem;
+  background-color: rgb(16, 195, 16);
+}
+
+#trade-buttons button:last-child {
+  background-color: rgb(231, 0, 0);
+}

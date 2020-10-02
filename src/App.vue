@@ -35,29 +35,32 @@
 // JS Files
 import Setup from "./scripts/Setup";
 import Trade from "./scripts/Trade";
+import GameLoop from "./scripts/GameLoop";
 
 // Vue Components
 import Inventory from "./components/Inventory";
 import Trading from "./components/Trading";
 import Modal from "./components/Modal";
 
+
 let gameData = Setup();
-
-gameData.listings.push(gameData.bots[2].CreateListing("Selling", 0));
-
 
 export default {
   name: 'App',
+  
   data: function() { // function so independent copies can be made
     return {
       gameData
     }
   },
+  created () {
+    GameLoop(this._data.gameData);
+  },
   components: {
     Inventory,
     Trading,
     Modal
-  }
+  },
 }
 </script>
 

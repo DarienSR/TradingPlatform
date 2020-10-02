@@ -23,18 +23,15 @@ class Trader {
   }
 
   NewTrade(type, idxOfItemToBeAdded, quantity) {
-    console.log(quantity)
     if(this.inventory[idxOfItemToBeAdded].quantity - quantity < 0) return;
     else this.inventory[idxOfItemToBeAdded].quantity -= quantity;
     
     let trade = new Trade(type, this.id);
-    console.log(trade);
     // TO DO: take itemsToBeAdded out of inventory
     let item = new this.inventory[idxOfItemToBeAdded].resourceType(quantity);
     
     trade.AddItemsToTrade(item, this.id);
     this.listedTrades.push(trade);
-    console.log(trade);
     return trade;
   }
 
@@ -68,26 +65,26 @@ class Trader {
     if(error.length > 0) {
       return error;
     } else {
-      console.log("succcess")
       return this.NewTrade(type, index, quantity);
     }
   }
 }
 
 class Bot extends Trader {
-  constructor(name) {
-    super(name);
+  constructor(favoriteResource = "Iron") {
+    super(); // inherit trader variables and methods.
+    this.favoriteResource = favoriteResource; 
     [this.negotiationRange, this.greed] = this.DefineBotPersonality(); // determines range in which bot will accept less than asking price for trade.
   }
 
-  CalculateTradeAcceptance() {
+  CalculateTradeAcceptance(offeringPrice) {
     return Math.random() > 0.5 ? false : true;
   }
 
   DefineBotPersonality() {
     // generates random numbers to determine bots risk levels, greed, etc. All values are from 0-1.
-    let negotiationRange = 0.2; 
-    let  greed = 0.3; // value from 0-1
+    let negotiationRange = 2; 
+    let greed = 3; // value from 0-1
     return [negotiationRange, greed];
   }
 
@@ -97,13 +94,12 @@ class Bot extends Trader {
     let item = new this.inventory[idxOfItemToBeAdded].resourceType(quantity);
     
     trade.AddItemsToTrade(item, this.id);
-    console.log(trade)
     this.listedTrades.push(trade);
     return trade;
   }
 
-  CreateListing(type, itemIdx) {
-    return this.NewTrade(type, itemIdx, 30);
+  CreateListing(type, itemIdx, quantity) {
+    return this.NewTrade(type, itemIdx, quantity);
   }
 }
 
