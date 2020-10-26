@@ -1,6 +1,6 @@
 
 
-const UPDATE_TIME = 10000; // time in ms
+const UPDATE_TIME = 5000; // time in ms
 
 export default function GameLoop(gameData) {
   setInterval(function() {
@@ -12,7 +12,7 @@ export default function GameLoop(gameData) {
 }
 
 function DetermineNewListings(listings, bots) {
-  const ListingCap = 2;
+  const ListingCap = 1;
   let count = 0;
   // Have all bots determine if they want to put up a listing
   for(let i = 0; i < bots.length; i++) {
